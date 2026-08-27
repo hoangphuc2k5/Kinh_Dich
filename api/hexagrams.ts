@@ -1,15 +1,23 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { readFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dataPath } from './_lib';
 
 export default function handler(_request: VercelRequest, response: VercelResponse) {
   try {
-    const dataPath = resolve(process.cwd(), 'data/64-que.json');
-    if (!existsSync(dataPath)) {
-      return response.status(500).json({ error: 'Không tìm thấy kho dữ liệu quẻ.' });
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+
+    const dataPathResolved = dataPath('data/64-que.json');
+    if (!existsSync(dataPathResolved)) {
+      return response.status(500).json({ error: `Không tìm thấy kho dữ liệu quẻ (đã thử ${dataPathResolved}).` });
     }
-    response.json(JSON.parse(readFileSync(dataPath, 'utf8')));
-  } catch {
-    response.status(500).json({ error: 'Không đọc được kho dữ liệu quẻ.' });
+    const content = readFileSync(dataPathResolved, 'utf8');
+    response.json(JSON.parse(content));
+  } catch (err) {
+    console.error('[api/hexagrams] error:', err);
+    response.status(500).json({
+      error: 'Không đọc được kho dữ liệu quẻ.',
+      detail: process.env.NODE_ENV === 'development' ? (err as Error).message : undefined,
+    });
   }
 }

@@ -1,5 +1,17 @@
 import { readFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { resolve, dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const ROOT = resolve(__dirname, '..');
+
+export function dataPath(...parts: string[]): string {
+  const direct = join(ROOT, ...parts);
+  if (existsSync(direct)) return direct;
+  const cwdPath = resolve(process.cwd(), ...parts);
+  return cwdPath;
+}
 
 export function cleanText(raw: string | undefined | null, maxChars = 800): string {
   if (!raw) return '';
@@ -65,7 +77,7 @@ export type ReadingPayload = {
 
 export function readRawMdExcerpt(nguonPdf: string | undefined, soThuTu: number, movingLine: number): string {
   if (!nguonPdf) return '';
-  const mdPath = resolve(process.cwd(), 'data', 'markdown-processed', nguonPdf);
+  const mdPath = dataPath('data', 'markdown-processed', nguonPdf);
   if (!existsSync(mdPath)) return '';
   try {
     const raw = readFileSync(mdPath, 'utf8');

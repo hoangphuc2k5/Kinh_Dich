@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { readFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
 import {
   cleanText,
   enrichReading,
@@ -9,6 +8,7 @@ import {
   requestDeepSeek,
   missingAnswerParts,
   getSystemPrompt,
+  dataPath,
   type ReadingPayload,
   type SourceEntry,
   type DeepSeekMessage,
@@ -18,7 +18,18 @@ export const config = {
   maxDuration: 300,
 };
 
+function setCommonHeaders(response: VercelResponse) {
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+}
+
 export default async function handler(request: VercelRequest, response: VercelResponse) {
+  setCommonHeaders(response);
+
+  if (request.method === 'OPTIONS') {
+    return response.status(204).end();
+  }
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
     return response.status(405).json({ error: 'Method Not Allowed' });
@@ -29,18 +40,20 @@ export default async function handler(request: VercelRequest, response: VercelRe
     return response.status(400).json({ error: 'Vui lòng nhập câu hỏi và gieo ít nhất một quẻ.' });
   }
   if (!process.env.DEEPSEEK_API_KEY) {
-    return response.json({ text: 'Chưa cấu hình DeepSeek API. Kết quả an quẻ đã sẵn sàng; hãy thêm DEEPSEEK_API_KEY vào Environment Variables trên Vercel để bật luận giải AI.' });
+    return response.json({
+      text: '⚠️ Chưa cấu hình DEEPSEEK_API_KEY trong Vercel Environment Variables. Vào Project Settings → Environment Variables, thêm DEEPSEEK_API_KEY, sau đó Redeploy.',
+    });
   }
 
   let timeout: NodeJS.Timeout | undefined;
 
   try {
-    const sourceDataPath = resolve(process.cwd(), 'data/64-que.json');
+    const sourceDataPath = dataPath('data/64-que.json');
     const sourceData: SourceEntry[] = existsSync(sourceDataPath)
       ? JSON.parse(readFileSync(sourceDataPath, 'utf8'))
       : [];
 
-    const referencesPath = resolve(process.cwd(), 'data/tai-lieu-tham-khao.json');
+    const referencesPath = dataPath('data/tai-lieu-tham-khao.json');
     const references: Array<{ nguon_pdf?: string; noi_dung?: string }> = existsSync(referencesPath)
       ? JSON.parse(readFileSync(referencesPath, 'utf8'))
       : [];
@@ -79,7 +92,8 @@ export default async function handler(request: VercelRequest, response: VercelRe
     const systemPrompt = getSystemPrompt(readings.length);
 
     const controller = new AbortController();
-    timeout = setTimeout(() => controller.abort(), Number(process.env.DEEPSEEK_TIMEOUT_MS) || 240000);
+    const timeoutMs = Number(process.env.DEEPSEEK_TIMEOUT_MS) || 240000;
+    timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     const messages: DeepSeekMessage[] = [
       { role: 'system', content: systemPrompt },
@@ -105,9 +119,18 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
   } catch (err) {
     if (timeout) clearTimeout(timeout);
-    console.error('Interpret error:', err);
-    const status = (err as Error & { status?: number }).status;
-    if (status === 429) return response.status(429).json({ error: 'DeepSeek đang giới hạn tần suất. Vui lòng thử lại sau ít phút.' });
-    return response.status(502).json({ error: 'Không thể kết nối dịch vụ luận giải lúc này. Vui lòng thử lại sau.' });
+    console.error('[api/interpret] error:', err);
+    const error = err as Error & { status?: number; cause?: unknown };
+    if (error.status === 429) {
+      return response.status(429).json({ error: 'DeepSeek đang giới hạn tần suất. Vui lòng thử lại sau ít phút.' });
+    }
+    const message = error.message || '';
+    if (message.includes('timeout') || message.includes('AbortError') || error.name === 'AbortError') {
+      return response.status(504).json({ error: 'Luận giải AI mất quá nhiều thời gian. Vui lòng thử lại sau (timeout).' });
+    }
+    return response.status(502).json({
+      error: 'Không thể kết nối dịch vụ luận giải lúc này. Vui lòng thử lại sau.',
+      detail: process.env.NODE_ENV === 'development' ? message : undefined,
+    });
   }
 }

@@ -4,5 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
 	plugins: [react()],
 	publicDir: 'Data_Photo',
-	server: { proxy: { '/api': 'http://localhost:8787' } },
+	server: {
+		port: 5173,
+	},
 });

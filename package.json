@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:web": "tsx scripts/start-web.ts",
+    "dev:vercel": "tsx scripts/start-web.ts",
     "setup:python": "tsx scripts/setup-python.ts",
     "dev:all": "tsx scripts/setup-python.ts && tsx scripts/start-all.ts",
     "build": "tsc -b && vite build",
