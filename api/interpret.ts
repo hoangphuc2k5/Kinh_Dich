@@ -12,7 +12,7 @@ import {
   type ReadingPayload,
   type SourceEntry,
   type DeepSeekMessage,
-} from './_lib';
+} from './_lib.js';
 
 export const config = {
   maxDuration: 300,

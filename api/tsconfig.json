@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.node.json",
+  "compilerOptions": {
+    "outDir": "../node_modules/.tmp/api.tsbuildinfo",
+    "tsBuildInfoFile": "../node_modules/.tmp/api.tsbuildinfo",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true
+  },
+  "include": ["./**/*.ts"]
+}

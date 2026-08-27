@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { readFileSync, existsSync } from 'node:fs';
-import { dataPath } from './_lib';
+import { dataPath } from './_lib.js';
 
 export default function handler(_request: VercelRequest, response: VercelResponse) {
   try {

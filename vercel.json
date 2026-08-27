@@ -7,7 +7,6 @@
   "functions": {
     "api/interpret.ts": {
       "maxDuration": 300,
-      "memory": 1024,
       "regions": ["sin1"]
     },
     "api/hexagrams.ts": {
