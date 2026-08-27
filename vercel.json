@@ -4,14 +4,15 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "region": "sin1",
   "functions": {
     "api/interpret.ts": {
       "maxDuration": 300,
-      "memory": 1024
+      "memory": 1024,
+      "regions": ["sin1"]
     },
     "api/hexagrams.ts": {
-      "maxDuration": 10
+      "maxDuration": 10,
+      "regions": ["sin1"]
     }
   },
   "rewrites": [
