@@ -225,6 +225,9 @@ app.post('/api/interpret', async (request, response) => {
   if (!question?.trim() || !Array.isArray(readings)) return response.status(400).json({ error: 'Vui lòng nhập câu hỏi và gieo ít nhất một quẻ.' });
   if (!process.env.DEEPSEEK_API_KEY) return response.json({ text: 'Chưa cấu hình DeepSeek API. Kết quả an quẻ đã sẵn sàng; hãy thêm DEEPSEEK_API_KEY vào .env để bật luận giải AI.' });
 
+  // Declared here (outside try) so it's still in scope inside the catch block below.
+  let timeout: NodeJS.Timeout | undefined;
+
   try {
     const sourceDataPath = resolve('data/64-que.json');
     const sourceData: SourceEntry[] = existsSync(sourceDataPath)
@@ -305,7 +308,7 @@ Sau khi viết xong 4 phần trên, HÃY ĐẾM LẠI SỐ MỤC **QUẢ 1…QU�
 Trả lời tiếng Việt, dùng sắc thái trang trọng, chiêm nghiệm nhưng dễ hiểu; KHÔNG CẮT NGANG GIỮA CHỮA NÀO, viết dài cho hết ý cho đến khi hoàn thành 5 phần trên. Không bịa lời kinh, không đưa ra tiên đoán chắc chắn 100%.`;
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), Number(process.env.DEEPSEEK_TIMEOUT_MS) || 180000);
+    timeout = setTimeout(() => controller.abort(), Number(process.env.DEEPSEEK_TIMEOUT_MS) || 180000);
 
     const messages: DeepSeekMessage[] = [
       { role: 'system', content: systemPrompt },
