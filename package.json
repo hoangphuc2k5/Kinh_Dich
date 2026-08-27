@@ -1,0 +1,36 @@
+{
+  "name": "mai-hoa-dich-so",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "setup:python": "tsx scripts/setup-python.ts",
+    "dev:all": "tsx scripts/setup-python.ts && tsx scripts/start-all.ts",
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "parse:markdown": "tsx scripts/parse-markdown.ts",
+    "pipeline:pdf": "tsx scripts/setup-python.ts && tsx scripts/run-python.ts scripts/pdf_pipeline.py",
+    "pipeline:watch": "tsx scripts/setup-python.ts && tsx scripts/run-python.ts scripts/pdf_pipeline.py --watch",
+    "server": "tsx server/index.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "lucide-react": "^0.468.0",
+    "lunar-javascript": "^1.7.7",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.3",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  }
+}
