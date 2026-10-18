@@ -81,7 +81,7 @@ main { max-width: 1180px; margin: auto; padding: 30px 42px 44px; } header { disp
 .matrix-corner span { color: #c6a76a; }
 .matrix-row { display: contents; }
 .matrix-row-label { background: #2a211c; color: #e2c98d; }
-.hexagram-cell { position: relative; min-height: 116px; padding: 25px 8px 10px; background: #211c19; border-right: 1px solid #4d4035; border-bottom: 1px solid #4d4035; transition: background .2s, border-color .2s; }
+.hexagram-cell { position: relative; min-height: 116px; width: 100%; padding: 25px 8px 10px; appearance: none; text-align: left; font: inherit; color: inherit; background: #211c19; border: 0; border-right: 1px solid #4d4035; border-bottom: 1px solid #4d4035; transition: background .2s, border-color .2s; cursor: pointer; }
 .hexagram-cell:hover { background: #3b2a21; border-color: #c6a76a; z-index: 1; }
 .hexagram-number { position: absolute; top: 7px; left: 9px; display: inline-flex; align-items: center; gap: 5px; color: #c6a76a; font-size: 10px; font-weight: 700; }
 .hexagram-number i { color: #ead9af; font: 400 18px/1 serif; font-style: normal; }
