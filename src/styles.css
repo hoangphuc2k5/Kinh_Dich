@@ -62,3 +62,42 @@ main { max-width: 1180px; margin: auto; padding: 30px 42px 44px; } header { disp
 .circle-ring { position: absolute; inset: 4%; border: 1px dashed #765640; border-radius: 50%; pointer-events: none; }
 .circle-spread-item { position: absolute; width: 132px; transform: translate(-50%, -50%); }
 @media (max-width: 650px) { .spread-overview, .spread-overview-wide { padding: 16px 12px 14px; } .three-grid, .seven-grid { grid-template-columns: repeat(3, minmax(88px, 1fr)); gap: 16px 20px; width: 100%; } .seven-grid { min-height: 320px; } .spread-tile { max-width: none; padding: 8px 6px 10px; } .spread-tile.center { max-width: none; } .circle-spread { width: min(100vw - 72px, 420px); } .circle-spread-item { width: 96px; } }
+
+/* Tra cứu 64 quẻ: dùng thẻ cố định và cuộn ngang trên màn hình hẹp để không chồng chữ. */
+.app-tabs { display: flex; gap: 8px; padding: 20px 0 4px; border-bottom: 1px solid #4d4035; }
+.app-tabs button { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #5b4b3b; background: #211c19; color: #aaa092; padding: 11px 15px; font-size: 11px; font-weight: 700; }
+.app-tabs button:hover, .app-tabs button.active { border-color: #c6a76a; color: #171614; background: #c6a76a; }
+.matrix-panel { width: calc(100vw - 48px); margin: 32px 0 0 calc(50% - 50vw + 24px); padding: 30px clamp(24px, 4vw, 64px); background: linear-gradient(145deg, #2a211c, #1d1916); border: 1px solid #765640; box-shadow: 0 18px 40px #09080755; }
+.matrix-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
+.matrix-heading h2 { margin-top: 9px; font-size: clamp(36px, 5vw, 58px); }
+.matrix-heading p:not(.eyebrow) { max-width: 610px; margin-top: 12px; color: #bdb4a6; line-height: 1.7; font-size: 13px; }
+.matrix-key { display: flex; align-items: center; gap: 8px; color: #998d7d; font-size: 10px; white-space: nowrap; }
+.matrix-key-dot { width: 8px; height: 8px; border-radius: 50%; background: #c6a76a; box-shadow: 0 0 0 4px #c6a76a22; }
+.matrix-scroll { width: 100%; overflow: visible; padding: 2px; }
+.hexagram-matrix { display: grid; grid-template-columns: 164px repeat(8, minmax(0, 1fr)); width: 100%; border-top: 1px solid #765640; border-left: 1px solid #765640; }
+.hexagram-matrix > * { min-width: 0; }
+.matrix-corner, .matrix-col-label, .matrix-row-label { display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px 8px; color: #d6bc82; background: #332720; border-right: 1px solid #765640; border-bottom: 1px solid #765640; font-size: 10px; font-weight: 700; line-height: 1.35; }
+.matrix-corner { color: #998d7d; font-size: 9px; letter-spacing: .04em; text-transform: uppercase; }
+.matrix-corner span { color: #c6a76a; }
+.matrix-row { display: contents; }
+.matrix-row-label { background: #2a211c; color: #e2c98d; }
+.hexagram-cell { position: relative; min-height: 116px; padding: 25px 8px 10px; background: #211c19; border-right: 1px solid #4d4035; border-bottom: 1px solid #4d4035; transition: background .2s, border-color .2s; }
+.hexagram-cell:hover { background: #3b2a21; border-color: #c6a76a; z-index: 1; }
+.hexagram-number { position: absolute; top: 7px; left: 9px; display: inline-flex; align-items: center; gap: 5px; color: #c6a76a; font-size: 10px; font-weight: 700; }
+.hexagram-number i { color: #ead9af; font: 400 18px/1 serif; font-style: normal; }
+.hexagram-cell strong { display: block; min-height: 52px; color: #f1e3c2; font: 600 13px/1.3 'Playfair Display', serif; overflow-wrap: anywhere; }
+.hexagram-cell .hexagram-symbol { color: #ead9af; font: 400 20px/1 serif; font-style: normal; white-space: nowrap; }
+.hexagram-cell small { display: block; margin-top: 8px; color: #928578; font-size: 9px; line-height: 1.3; }
+@media (max-width: 650px) {
+  .app-tabs { overflow-x: auto; }
+  .app-tabs button { flex: 0 0 auto; }
+  .matrix-panel { width: calc(100vw - 24px); margin: 22px 0 0 calc(50% - 50vw + 12px); padding: 18px 8px; }
+  .matrix-heading { align-items: start; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+  .matrix-key { white-space: normal; }
+  .hexagram-matrix { grid-template-columns: 74px repeat(8, minmax(0, 1fr)); }
+  .matrix-corner, .matrix-col-label, .matrix-row-label { padding: 9px 3px; font-size: 8px; }
+  .hexagram-cell { min-height: 128px; padding: 25px 4px 8px; }
+  .hexagram-cell strong { font-size: 10px; line-height: 1.25; }
+  .hexagram-cell .hexagram-symbol { font-size: 16px; }
+  .hexagram-cell small { font-size: 8px; }
+}
